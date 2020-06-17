@@ -38,13 +38,15 @@ class Ui(QtWidgets.QMainWindow):
             self.ui.Apply_button_neg.clicked.connect(self.process_image_neg) 
         elif index == 1:
             self.ui.Browse_button_thres.clicked.connect(self.getImage,index)
-            self.ui.Apply_button_thres.clicked.connect(self.process_image_thres) 
+            self.ui.ThresSlider.valueChanged.connect(self.process_image_thres)
+            #self.ui.Apply_button_thres.clicked.connect(self.process_image_thres) 
         elif index == 2:
             self.ui.Browse_button_log.clicked.connect(self.getImage,index)
             self.ui.Apply_button_log.clicked.connect(self.process_image_log) 
         elif index == 3:
             self.ui.Browse_button_pow.clicked.connect(self.getImage,index)
-            self.ui.Apply_button_pow.clicked.connect(self.process_image_pow) 
+            self.ui.GammaSlider.valueChanged.connect(self.process_image_pow)
+            #self.ui.Apply_button_pow.clicked.connect(self.process_image_pow) 
         elif index == 4:
             self.ui.Browse_button_piece.clicked.connect(self.getImage,index)
             self.ui.Apply_button_piece.clicked.connect(self.process_image_piece) 
@@ -76,13 +78,16 @@ class Ui(QtWidgets.QMainWindow):
     
     def process_image_thres(self):
         image = cv2.imread(self.path,cv2.IMREAD_GRAYSCALE)
-        thres, done_thres = QtWidgets.QInputDialog.getInt(self, 'Input Dialog', 'Enter threshold:')
+        thres = self.ui.ThresSlider.value()
+        print(thres)
+        #thres, done_thres = QtWidgets.QInputDialog.getInt(self, 'Input Dialog', 'Enter threshold:')
         # xu ly image input
         image = img_thres(image,thres)
         convertToQtFormat = QImage(image.data, image.shape[1], image.shape[0], QImage.Format_Grayscale8)
         convertToQtFormat = QPixmap.fromImage(convertToQtFormat)
         pixmap = QPixmap(convertToQtFormat)
         self.ui.OutputPic_thres.setPixmap(QPixmap(pixmap))
+        self.ui.ThresValue.setText(str(thres))
     
     def process_image_log(self):
         image = cv2.imread(self.path,cv2.IMREAD_GRAYSCALE)
@@ -97,15 +102,17 @@ class Ui(QtWidgets.QMainWindow):
 
     def process_image_pow(self):
         image = cv2.imread(self.path,cv2.IMREAD_GRAYSCALE)
-        c, done_pow_c = QtWidgets.QInputDialog.getDouble(self, 'Input Dialog', 'Enter c:')
-        gamma, done_pow_gamma = QtWidgets.QInputDialog.getDouble(self, 'Input Dialog', 'Enter gamma:')
+        #c, done_pow_c = QtWidgets.QInputDialog.getDouble(self, 'Input Dialog', 'Enter c:')
+        #gamma, done_pow_gamma = QtWidgets.QInputDialog.getDouble(self, 'Input Dialog', 'Enter gamma:')
         # xu ly image input
-        image = img_gamma_correction(image,c,gamma)*255
+        gamma = self.ui.GammaSlider.value()
+        image = img_gamma_correction(image,1,gamma/100.0)*255
         image = np.uint8(image)
         convertToQtFormat = QImage(image.data, image.shape[1], image.shape[0], QImage.Format_Grayscale8)
         convertToQtFormat = QPixmap.fromImage(convertToQtFormat)
         pixmap = QPixmap(convertToQtFormat)
         self.ui.OutputPic_pow.setPixmap(QPixmap(pixmap))
+        self.ui.GammaValue.setText(str(gamma/100.0))
 
     def process_image_piece(self):
         image = cv2.imread(self.path,cv2.IMREAD_GRAYSCALE)

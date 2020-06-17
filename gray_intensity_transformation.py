@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import math
 
 def img_neg(img):
     img_negative = 255 - img
@@ -10,13 +11,22 @@ def img_thres(img,threshold):
     img[img>=threshold] =255
     return img
 
-def img_log(img,c):
-    img_logarithmic = c * np.log(1 + img /255)
-    return img_logarithmic
+def img_log(image):
+    image = image.astype(np.float)
+    c = 255 / np.log(1 + 255) 
+
+    log_image = c * (np.log(image + 1)) 
+    log_image = np.array(log_image, dtype = np.uint8) 
+    
+    exp_image = (np.exp(image)**(1/c)) -1
+    exp_image = np.array(exp_image, dtype = np.uint8) 
+    
+    return log_image, exp_image
 
 def img_gamma_correction(img,c,gamma):
     r = img/255
     img_gamma = c * (r**gamma)
+    img_gamma = np.array(img_gamma*255,dtype = np.uint8)
     return img_gamma
 
 def pix_linear(img,r1,s1,r2,s2):
@@ -60,19 +70,20 @@ def img_bit_trans(img):
     return final
 
 
-# if 1:
-    
-#     import matplotlib.pyplot as plt
-    
-#     path = '/home/quangduy/BTL_XLA/input/Lenna.png'
-#     img = cv2.imread(path,0)
-#     # img_negative = img_neg(img)
-#     # img_threshold = img_thres(img,threshold=120)
-#     img_logarithmic = img_log(img,c=1)
-#     print(img_logarithmic)
-#     # img_gamma = img_gamma_correction(img,1,0.2)
-#     # img_linear_trans = img_linear(img, r1=50, s1=0, r2=100, s2=255)
-#     # img_bit = img_bit_trans(img)
-#     cv2.imshow("Image Processing",img_logarithmic)
+if __name__=="__main__":
 
-#     cv2.waitKey(0)
+    
+    path = '/home/quangduy/BTL_XLA/input/team.jpg'
+    img = cv2.imread(path,0)
+    img1 = cv2.imread(path,0)
+    #img = img_neg(img)
+    #img = img_thres(img,threshold=120)
+    #img,img2 = img_log(img)
+    #print(img_logarithmic)
+    img = img_gamma_correction(img,1,2)
+    # img_linear_trans = img_linear(img, r1=50, s1=0, r2=100, s2=255)
+    # img_bit = img_bit_trans(img)
+    cv2.imshow("log",img)
+    cv2.imshow("Image ",img1)
+    # cv2.imshow("exp",img2)
+    cv2.waitKey(0)
