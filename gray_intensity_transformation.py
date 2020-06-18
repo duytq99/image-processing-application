@@ -18,10 +18,16 @@ def img_log(image):
     log_image = c * (np.log(image + 1)) 
     log_image = np.array(log_image, dtype = np.uint8) 
     
+    return log_image
+
+def img_invlog(image):
+    image = image.astype(np.float)
+    c = 255 / np.log(1 + 255) 
+    
     exp_image = (np.exp(image)**(1/c)) -1
     exp_image = np.array(exp_image, dtype = np.uint8) 
     
-    return log_image, exp_image
+    return exp_image
 
 def img_gamma_correction(img,c,gamma):
     r = img/255
@@ -80,10 +86,10 @@ if __name__=="__main__":
     #img = img_thres(img,threshold=120)
     #img,img2 = img_log(img)
     #print(img_logarithmic)
-    img = img_gamma_correction(img,1,2)
-    # img_linear_trans = img_linear(img, r1=50, s1=0, r2=100, s2=255)
+    #img = img_gamma_correction(img,1,2)
+    img = img_linear(img, r1=50, s1=0, r2=100, s2=255)
     # img_bit = img_bit_trans(img)
-    cv2.imshow("log",img)
-    cv2.imshow("Image ",img1)
+    cv2.imshow("processed",img)
+    cv2.imshow("origin ",img1)
     # cv2.imshow("exp",img2)
     cv2.waitKey(0)
