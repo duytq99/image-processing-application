@@ -12,7 +12,7 @@ def img_thres(img,threshold):
 
 def img_log(image):
     image = image.astype(np.float)
-    c = 255 / np.log(1 + 255) 
+    c = 255 / np.log(1 + 255)
     log_image = c * (np.log(image + 1)) 
     log_image = np.array(log_image, dtype = np.uint8) 
     
@@ -73,14 +73,37 @@ def img_bit_trans(img):
 def arguments_parser():
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('-p', '--path', default='', required=False, help='Path to image')
+    parser.add_argument('-p', '--path', default='data/Lenna.png', required=False, help='Path to image')
     parser.add_argument('-f', '--function', choices=['negative', 'threshold', 'log', 'invlog', 'gamma', 'linear', 'bitplane'], required=True, help='Chosse transformation function')
+    parser.add_argument('-thr', '--threshold', default=127, required=False, help='Threshold value')
+    parser.add_argument('-g', '--gamma', default=0.5, required=False, help='Gamma correction coefficient')
     parser.add_argument('-s', '--save', action='store_true', help='Save output image')
     return parser.parse_args()
 
 def main():
     args = arguments_parser()
     img = cv2.imread(args.path,1)
+
+    if args.function == 'negative':
+        output = img_neg(img)
+    elif args.function == 'threshold':
+        output = img_thres(img, args.threshold)
+    elif args.function =='log':
+        output = img_log(img)
+    elif args.function == 'invlog':
+        output = img_invlog(img)
+    elif args.function == 'gamma':
+        output = img_gamma_correction(img, 1, args.gamma)
+    elif args.function == 'linear':
+        output = img_linear(img, r1=5, s1=10, r2=100, s2=200)
+    elif args.function == 'bitplane':
+        output = img_bit_trans(img)
+    else:
+        raise NotImplementedError
+
+    if args.save:
+        cv2.imwrite('output/intensity_demo.png', output)
+
     cv2.imshow("img",img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()

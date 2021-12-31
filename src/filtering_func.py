@@ -55,8 +55,15 @@ def pre_filter(img):
 def arguments_parser():
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('-p', '--path', default='', required=False, help='Path to image')
+    parser.add_argument('-p', '--path', default='data/Lenna.png', required=False, help='Path to image')
     parser.add_argument('-f', '--function', choices=['average', 'w_average', 'gaussian', 'median', 'laplacian', 'gabor', 'sobel', 'prewitt'], required=True, help='Chosse filter function')
+    parser.add_argument('-ks', '--kernel_size', default=3, required=False, help='Kernel size')
+    parser.add_argument('-w', '--weight', default=2, required=False, help='Weight of weighted avg filter')
+    parser.add_argument('-sig', '--sigma', default=1, required=False, help='Sigma of Gaussian filter')
+    parser.add_argument('-l', '--ld', default=10, required=False, help='Lambda of Gabor filter')
+    parser.add_argument('-t', '--theta', default=1, required=False, help='Theta of Gabor filter')
+    parser.add_argument('-ph', '--phi', default=0, required=False, help='Phi of Gabor filter')
+    parser.add_argument('-g', '--gamma', default=1, required=False, help='Gamma of Gabor filter')
     parser.add_argument('-s', '--save', action='store_true', help='Save output image')
     return parser.parse_args()
 
@@ -64,8 +71,29 @@ def arguments_parser():
 def main():
     args = arguments_parser()
     img = cv2.imread(args.path,1)
-    img = gab_filter(img,size=15,lamda=10,theta=1,phi=0,sigma=5,gamma=1)
-    cv2.imshow("img",img)
+    if args.function == 'average':
+        output = avg_filter(img, args.kernel_size)
+    elif args.function == 'w_average':
+        output = weighted_avg_filter(img, args.weight)
+    elif args.function =='gaussian':
+        output = gaussian_filter(img, args.kernel_size, args.sigma)
+    elif args.function == 'median':
+        output = median_filter(img, args.kernel_size)
+    elif args.function == 'laplacian':
+        output = laplacian_filter(img, args.kernel_size)
+    elif args.function == 'gabor':
+        output = gab_filter(img, args.kernel_size, args.ld, args.theta, args.phi, int(args.sigma), args.gamma)
+    elif args.function == 'sobel':
+        output = sob_filter(img, args.kernel_size)
+    elif args.function == 'prewitt':
+        output = pre_filter(img)
+    else:
+        raise NotImplementedError
+
+    if args.save:
+        cv2.imwrite('output/filtering_demo.png', output)
+
+    cv2.imshow("img",output)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
