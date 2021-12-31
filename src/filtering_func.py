@@ -60,9 +60,11 @@ def arguments_parser():
     parser.add_argument('-s', '--save', action='store_true', help='Save output image')
     return parser.parse_args()
 
+
 def main():
     args = arguments_parser()
     img = cv2.imread(args.path,1)
+    img = gab_filter(img,size=15,lamda=10,theta=1,phi=0,sigma=5,gamma=1)
     cv2.imshow("img",img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
