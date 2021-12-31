@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-import math
 
 def img_neg(img):
     img_negative = 255 - img
@@ -14,7 +13,6 @@ def img_thres(img,threshold):
 def img_log(image):
     image = image.astype(np.float)
     c = 255 / np.log(1 + 255) 
-
     log_image = c * (np.log(image + 1)) 
     log_image = np.array(log_image, dtype = np.uint8) 
     
@@ -25,7 +23,7 @@ def img_invlog(image):
     c = 255 / np.log(1 + 255) 
     
     exp_image = (np.exp(image)**(1/c)) -1
-    exp_image = np.array(exp_image, dtype = np.uint8) 
+    exp_image = np.array(exp_image, dtype = np.uint8)
     
     return exp_image
 
@@ -44,8 +42,7 @@ def pix_linear(img,r1,s1,r2,s2):
         return ((255 - s2)/(255 - r2)) * (img - r2) + s2
 
 def img_linear(img,r1,s1,r2,s2):
-    pixelVal_vec = np.vectorize(pix_linear) 
-  
+    pixelVal_vec = np.vectorize(pix_linear)
     # Apply contrast stretching. 
     contrast_stretched = pixelVal_vec(img, r1, s1, r2, s2) 
     return contrast_stretched
@@ -56,8 +53,6 @@ def img_bit_trans(img):
         for j in range(img.shape[1]):
          lst.append(np.binary_repr(img[i][j] ,width=8)) # width = no. of bits
  
-# We have a list of strings where each string represents binary pixel value. To extract bit planes we need to iterate over the strings and store the characters corresponding to bit planes into lists.
-# Multiply with 2^(n-1) and reshape to reconstruct the bit image.
     eight_bit_img = (np.array([int(i[0]) for i in lst],dtype = np.uint8) * 128).reshape(img.shape[0],img.shape[1])
     seven_bit_img = (np.array([int(i[1]) for i in lst],dtype = np.uint8) * 64).reshape(img.shape[0],img.shape[1])
     six_bit_img = (np.array([int(i[2]) for i in lst],dtype = np.uint8) * 32).reshape(img.shape[0],img.shape[1])
@@ -67,29 +62,30 @@ def img_bit_trans(img):
     two_bit_img = (np.array([int(i[6]) for i in lst],dtype = np.uint8) * 2).reshape(img.shape[0],img.shape[1])
     one_bit_img = (np.array([int(i[7]) for i in lst],dtype = np.uint8) * 1).reshape(img.shape[0],img.shape[1])
  
-#Concatenate these images for ease of display using cv2.hconcat()
     finalr = cv2.hconcat([eight_bit_img,seven_bit_img,six_bit_img,five_bit_img])
     finalv =cv2.hconcat([four_bit_img,three_bit_img,two_bit_img,one_bit_img])
  
-# Vertically concatenate
     final = cv2.vconcat([finalr,finalv])
     return final
 
 
-if __name__=="__main__":
 
-    
-    path = '/home/quangduy/BTL_XLA/input/team.jpg'
-    img = cv2.imread(path,0)
-    img1 = cv2.imread(path,0)
-    #img = img_neg(img)
-    #img = img_thres(img,threshold=120)
-    #img,img2 = img_log(img)
-    #print(img_logarithmic)
-    #img = img_gamma_correction(img,1,2)
-    img = img_linear(img, r1=50, s1=0, r2=100, s2=255)
-    # img_bit = img_bit_trans(img)
-    cv2.imshow("processed",img)
-    cv2.imshow("origin ",img1)
-    # cv2.imshow("exp",img2)
+def arguments_parser():
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', '--path', default='', required=False, help='Path to image')
+    parser.add_argument('-f', '--function', choices=['negative', 'threshold', 'log', 'invlog', 'gamma', 'linear', 'bitplane'], required=True, help='Chosse transformation function')
+    parser.add_argument('-s', '--save', action='store_true', help='Save output image')
+    return parser.parse_args()
+
+def main():
+    args = arguments_parser()
+    img = cv2.imread(args.path,1)
+    cv2.imshow("img",img)
     cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+
+if __name__ == "__main__":
+    main()
+
