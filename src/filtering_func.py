@@ -69,22 +69,24 @@ def pre_filter(img):
     cv2.imwrite("output/prewitt_result_gray.jpg",result)
     return result
 
-if __name__ == "__main__":
-    image_path = "input/team.png"
-    img = cv2.imread(image_path,1)
 
-    #img = avg_filter(img,size=15)
-    #img = weighted_avg_filter(img,b=2)
-    img = gaussian_filter(img,5,1)
-    #img = median_filter(img,5)
-    #img = laplacian_filter(img,size=3)
-    #img = gab_filter(img)
-    #img = sob_filter(img,5)
-    #img = pre_filter(img)
+def arguments_parser():
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', '--path', default='', required=False, help='Path to image')
+    parser.add_argument('-f', '--function', choices=['average', 'w_average', 'gaussian', 'median', 'laplacian', 'gabor', 'sobel', 'prewitt'], required=True, help='Chosse filter function')
+    return parser.parse_args()
 
+def main():
+    args = arguments_parser()
+    img = cv2.imread(args.path,1)
     cv2.imshow("img",img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+
+
+if __name__ == "__main__":
+    main()
 
     
 
