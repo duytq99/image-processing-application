@@ -98,7 +98,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QTabWidget" name="tabWidget_2">
+   <widget class="QTabWidget" name="tabTask">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -108,13 +108,13 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
       <string>Gray Intensity Transformation</string>
      </attribute>
-     <widget class="QTabWidget" name="tabWidget">
+     <widget class="QTabWidget" name="tabIntensity">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -127,7 +127,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="NegTab">
        <attribute name="title">
@@ -549,7 +549,7 @@
      <attribute name="title">
       <string>Spatial Filtering</string>
      </attribute>
-     <widget class="QTabWidget" name="tabWidget_3">
+     <widget class="QTabWidget" name="tabFiltering">
       <property name="geometry">
        <rect>
         <x>0</x>
