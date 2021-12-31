@@ -6,7 +6,7 @@ from PyQt5.QtCore import *
 import sys, time, traceback
 import GUI_2
 import cv2
-from spatial_filtering_transformation import *
+from filtering_func import *
 
 class Ui(QtWidgets.QMainWindow):
     def __init__(self):

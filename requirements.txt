@@ -1,0 +1,5 @@
+matplotlib>=3.5.1
+numpy>=1.21.5
+opencv_python>=4.5.5.62
+PyQt5>=5.15.6
+skimage>=0.0

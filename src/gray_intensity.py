@@ -7,7 +7,7 @@ import sys, time, traceback
 import GUI
 import cv2
 import numpy as np
-from gray_intensity_transformation import *
+from intensity_func import *
 
 class Ui(QtWidgets.QMainWindow):
     def __init__(self):
